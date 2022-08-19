@@ -390,7 +390,7 @@ def approveBookingHandler(update: Update, context: CallbackContext) -> int:
             text=f'Denied booking for {ROOMS[facility]} at {dt}')
         bot.send_message(
             chat_id=int(user),
-            text=f'Your booking has been denied')
+            text=f'Your booking for {ROOMS[facility]} has been denied')
         context.bot_data['booking_requests'].pop(int(req[0]))
         return ConversationHandler.END
     
@@ -403,7 +403,7 @@ def approveBookingHandler(update: Update, context: CallbackContext) -> int:
             text=f'Approved booking for {ROOMS[facility]} at {dt}')
     bot.send_message(
             chat_id=int(user),
-            text=f'Your booking has been approved!')
+            text=f'Your booking for {ROOMS[facility]} has been approved!')
     context.user_data.clear()
     return ConversationHandler.END
 
@@ -493,16 +493,11 @@ def setup(update: Update, context: CallbackContext) -> None:
         return'''
     DA = json.loads(os.environ.get('DEVELOPER_AUTH'))
     if 'approved' not in context.bot_data:
-        context.bot_data['approved']=[DA]
+        context.bot_data['approved']=[tuple(DA)]
     if 'users' not in context.bot_data:
         context.bot_data['users']={}
     if 'requests' not in context.bot_data:
         context.bot_data['requests']={}
-    if('daily_job' not in context.bot_data):
-        context.bot_data['daily_job'] =''
-    if(context.job_queue.get_jobs_by_name(context.bot_data['daily_job']) is not None):
-        for j in context.job_queue.get_jobs_by_name(context.bot_data['daily_job']):
-            j.schedule_removal()
     # logger.info('Creating daily reminder')
     # job = context.job_queue.run_daily(reminder, days=(0, 1, 2, 3, 4), context=context,time = time(hour = 17, minute = 30, second = 00, tzinfo=tz1))
     # logger.info(f'next job execution at {job.next_t.isoformat()}')
@@ -702,7 +697,7 @@ def bookHandler(update: Update, context: CallbackContext) -> int:
         booked = event_list[0]['summary']
         bot.edit_message_text(
             chat_id=update.effective_chat.id, message_id=context.user_data['msgid'], 
-            text=f'Cannot book {ROOMS[booking_facility]} on {bd_str} {booking_time}. Booking already made by {booked}. Use /cancel to cancel or enter your booking start and end time in 24 hour HHHH-HHHH format.'
+            text=f'Cannot book {ROOMS[booking_facility]} on {bd_str} {booking_time}. Booking already made by {booked}. Use /cancel to cancel or re-enter a different booking start time.'
         )
         return TIME
     
