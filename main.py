@@ -163,7 +163,7 @@ def regHandler(update: Update, context: CallbackContext) -> int:
     rankname = context.user_data['rankname']
     nric = context.user_data['nric']
     phone = context.user_data['phone']
-    auth_key = [str(nric),str(phone)]
+    auth_key = (str(nric),str(phone))
     if(auth_key in context.bot_data['approved']):
         context.bot_data['users'][userid]={
             'rankname':rankname,
@@ -204,7 +204,7 @@ def approve(update: Update, context: CallbackContext) -> int:
     if(args is None):
         args = []
     if(len(args)==2):
-        auth_key = [args[0], args[1]]
+        auth_key = (args[0], args[1])
         if(re.match('^[0-9]{4}$',auth_key[1]) is not None and re.match('^[0-9]{3}[A-Z]$', auth_key[0]) is not None):
             context.bot_data['approved'].append(auth_key)
             bot.send_message(
