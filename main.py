@@ -491,11 +491,9 @@ def setup(update: Update, context: CallbackContext) -> None:
     '''if(update.effective_user.id!=DEVELOPER_CHAT_ID):
         update.message.reply_text('user not authorized')
         return'''
-    if 'approved' not in context.bot_data:
-        context.bot_data['approved']=[]
     DA = json.loads(os.environ.get('DEVELOPER_AUTH'))
-    if DA not in context.bot_data['approved']:
-        context.bot_data['approved'].append(DA)
+    if 'approved' not in context.bot_data:
+        context.bot_data['approved']=[DA]
     if 'users' not in context.bot_data:
         context.bot_data['users']={}
     if 'requests' not in context.bot_data:
